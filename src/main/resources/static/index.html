@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arka</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --heading-primary: #1e293b;
+            --heading-secondary: #334155;
+            --bg: #0f172a;
+            --bg-pattern: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            --card: #1e293b;
+            --card-gradient: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            --text: #f1f5f9;
+            --text-light: #cbd5e1;
+            --muted: #94a3b8;
+            --border: #334155;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-pattern);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+            font-size: 16px;
+            position: relative;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        .card, .card-header, .navbar, .form-control, .form-select, .btn, .patient-item, .chip, .prescription-group {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container-fluid {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .navbar {
+            background: var(--card);
+            color: var(--text);
+            padding: 1.25rem 0;
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            z-index: 10;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text) !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .navbar-brand i {
+            color: var(--primary);
+        }
+        
+        .navbar-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+        
+        .navbar-info i {
+            margin-right: 0.25rem;
+        }
+        
+        .card {
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            background: var(--card);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+        
+        .card-header {
+            background: var(--heading-primary);
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+            border-radius: 0 !important;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .card-header i {
+            color: var(--primary);
+            margin-right: 0.5rem;
+        }
+        
+        .card-header i {
+            margin-right: 0.5rem;
+        }
+        
+        .card-header-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .card-header .btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+            border-radius: 0.5rem;
+        }
+        
+        .card-body {
+            padding: 1.75rem;
+            font-size: 1.05rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background: var(--card);
+            color: var(--text);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            background: var(--card);
+            outline: none;
+        }
+        
+        .form-control:disabled, .form-control[readonly] {
+            background: var(--heading-primary);
+            border-color: var(--accent);
+            color: var(--text);
+            font-weight: 600;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-light {
+            background: var(--card);
+            color: var(--primary);
+            border: 1px solid var(--border);
+            font-weight: 500;
+        }
+        
+        .btn-light:hover {
+            background: var(--heading-primary);
+            color: var(--primary-dark);
+            border-color: var(--primary);
+        }
+        
+        .btn-outline-primary {
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 1.05rem;
+            padding: 0.75rem 1.5rem;
+            border-width: 2px;
+        }
+        
+        .btn-danger {
+            border-radius: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .btn-warning {
+            border-radius: 0.75rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--warning), #f97316);
+            border: none;
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 0.9rem;
+            font-size: 0.95rem;
+        }
+        
+        .search-input {
+            border-radius: 2rem;
+            padding: 0.9rem 1.75rem;
+            font-size: 1.1rem;
+            border: 2px solid var(--border);
+        }
+        
+        .patient-list {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 1.25rem;
+        }
+        
+        .patient-item {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+            margin-bottom: 0.5rem;
+            background: var(--card);
+            font-size: 1.05rem;
+        }
+        
+        .patient-item:hover {
+            border-color: var(--primary);
+            background: var(--heading-primary);
+            transform: translateX(4px);
+            box-shadow: var(--shadow);
+        }
+        
+        .patient-item.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.15);
+            box-shadow: var(--shadow);
+        }
+        
+        .patient-item strong {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+        
+        .muted {
+            color: var(--muted);
+            font-size: 1rem;
+        }
+        
+        .timeline {
+            border-left: 2px solid var(--border);
+            margin: 1.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .timeline-item {
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+        
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -1.5rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+        
+        .timeline-item .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+        }
+        
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 0.85rem;
+            border-radius: 0.5rem;
+            background: var(--heading-secondary);
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--border);
+        }
+        
+        .prescription-group {
+            border: 1px dashed var(--border);
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            background: var(--heading-primary);
+            position: relative;
+            transition: all 0.2s;
+        }
+        
+        .prescription-group:hover {
+            border-color: var(--primary);
+            background: var(--card);
+            box-shadow: var(--shadow);
+        }
+        
+        .prescription-group .btn-delete {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            padding: 0.4rem 0.7rem;
+            border-radius: 0.75rem;
+        }
+        
+        .prescription-group .form-control,
+        .prescription-group .form-select {
+            margin-bottom: 1rem;
+        }
+        
+        .prescription-group .form-control:last-child,
+        .prescription-group textarea:last-child {
+            margin-bottom: 0;
+        }
+        
+        .success {
+            color: var(--success);
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+        
+        .error {
+            color: var(--danger);
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+        
+        .status-message {
+            padding: 1rem 1.25rem;
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+        
+        .status-message.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 2px solid rgba(16, 185, 129, 0.4);
+        }
+        
+        .status-message.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 2px solid rgba(239, 68, 68, 0.4);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+            font-size: 1.05rem;
+        }
+        
+        .date-input-wrapper {
+            position: relative;
+        }
+        
+        .date-input-wrapper::after {
+            content: "\F4E5";
+            font-family: "bootstrap-icons";
+            position: absolute;
+            right: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--muted);
+            font-size: 1.25rem;
+        }
+        
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-title i {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+        }
+        
+        h5 {
+            font-size: 1.15rem;
+        }
+        
+        .edit-visit-btn {
+            margin-top: 0.75rem;
+        }
+        
+        .patient-id-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            color: white;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-left: 0.5rem;
+        }
+        
+        .autocomplete-wrapper {
+            position: relative;
+        }
+        
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            margin-top: 0.25rem;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+            display: none;
+        }
+        
+        .autocomplete-dropdown.show {
+            display: block;
+        }
+        
+        .autocomplete-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+        
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+        
+        .autocomplete-item:hover {
+            background: var(--heading-primary);
+        }
+        
+        .autocomplete-item strong {
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+        
+        .autocomplete-item .muted {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-top: 0.25rem;
+        }
+        
+        .autocomplete-warning {
+            padding: 0.75rem 1rem;
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .modal-content {
+            background: var(--card);
+            color: var(--text);
+        }
+        
+        .modal-footer {
+            background: var(--heading-primary);
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <span class="navbar-brand mb-0">
+                    <i class="bi bi-hospital"></i> Arka
+                </span>
+                <div class="navbar-info">
+                    <span id="currentDate">
+                        <i class="bi bi-calendar3"></i>
+                        <span id="dateDisplay"></span>
+                    </span>
+                    <span id="currentTime">
+                        <i class="bi bi-clock"></i>
+                        <span id="timeDisplay"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4 py-4">
+        <div class="row g-4">
+            <!-- Search Patients Card -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="bi bi-search"></i> Search Patients
+                    </div>
+                    <div class="card-body">
+                        <input id="searchInput" class="form-control search-input" placeholder="Search by patient name...">
+            <div id="patientList" class="patient-list muted">Start typing to find a patient.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Patient Card -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="bi bi-person-plus"></i> New Patient
+                    </div>
+                    <div class="card-body">
+            <form id="patientForm">
+                            <div class="mb-3 autocomplete-wrapper">
+                                <input name="firstName" id="firstNameInput" class="form-control" placeholder="First name *" required autocomplete="off">
+                                <div id="firstNameAutocomplete" class="autocomplete-dropdown"></div>
+                </div>
+                            <div class="mb-3">
+                                <input name="middleName" class="form-control" placeholder="Middle name">
+                </div>
+                            <div class="mb-3">
+                                <input name="lastName" class="form-control" placeholder="Last name">
+                </div>
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <input name="age" type="number" class="form-control" placeholder="Age" min="0" max="150">
+                </div>
+                                <div class="col-6 mb-3">
+                                    <select name="gender" class="form-select">
+                        <option value="">Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                </div>
+                            <div class="mb-3">
+                                <input name="mobile" class="form-control" placeholder="Mobile number">
+                </div>
+                            <div class="mb-3">
+                                <textarea name="address" class="form-control" rows="2" placeholder="City / Address"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-check-circle"></i> Create Patient
+                            </button>
+                            <div id="patientFormStatus" class="status-message" style="display: none;"></div>
+            </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patient Details Card -->
+            <div class="col-lg-4 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <span><i class="bi bi-person-badge"></i> Patient Details</span>
+                        <div class="card-header-actions" id="patientDetailsActions" style="display: none;">
+                            <button type="button" class="btn btn-light btn-sm" onclick="openEditPatientModal()">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="patientDetails" class="muted">Select a patient to view details.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patient Timeline Card -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-clock-history"></i> Visit History
+                    </div>
+                    <div class="card-body">
+                        <div id="patientTimeline" class="muted">Select a patient to view visit history.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Visit & Prescription Card -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-calendar-plus"></i> Add Visit & Prescription
+                    </div>
+                    <div class="card-body">
+            <form id="visitForm">
+                            <input type="hidden" id="editingVisitId" name="visitId">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">
+                                        Patient ID *
+                                        <span id="patientIdBadge" class="patient-id-badge" style="display: none;"></span>
+                                    </label>
+                                    <input name="patientId" id="patientIdInput" class="form-control" placeholder="Select a patient" required readonly>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Visit Date & Time *</label>
+                                    <div class="date-input-wrapper">
+                                        <input name="visitDate" id="visitDate" class="form-control" placeholder="Select date & time" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Symptoms</label>
+                                    <textarea name="symptoms" class="form-control" rows="2" placeholder="Symptoms"></textarea>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Diagnosis / Notes</label>
+                                    <textarea name="diagnosis" class="form-control" rows="2" placeholder="Diagnosis / Notes"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="section-title">
+                                <i class="bi bi-capsule"></i> Prescriptions
+                            </div>
+                <div id="prescriptions"></div>
+                            
+                            <button type="button" id="addPrescriptionBtn" class="btn btn-outline-primary mb-3">
+                                <i class="bi bi-plus-circle"></i> Add Prescription
+                            </button>
+
+                            <div class="d-grid">
+                                <button type="submit" id="saveVisitBtn" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-save"></i> Save Visit
+                                </button>
+                            </div>
+                            <div id="visitFormStatus" class="status-message" style="display: none;"></div>
+            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Patient Modal -->
+    <div class="modal fade" id="editPatientModal" tabindex="-1" aria-labelledby="editPatientModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="border-radius: 1.25rem; border: none;">
+                <div class="modal-header" style="background: var(--heading-primary); color: var(--text); border-bottom: 1px solid var(--border);">
+                    <h5 class="modal-title" id="editPatientModalLabel" style="font-weight: 600; font-size: 1rem;">
+                        <i class="bi bi-pencil-square"></i> Edit Patient Details
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 2rem;">
+                    <form id="editPatientForm">
+                        <div class="mb-3">
+                            <label class="form-label">First name *</label>
+                            <input name="firstName" id="editFirstName" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Middle name</label>
+                            <input name="middleName" id="editMiddleName" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Last name</label>
+                            <input name="lastName" id="editLastName" class="form-control">
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Age</label>
+                                <input name="age" type="number" id="editAge" class="form-control" min="0" max="150">
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Gender</label>
+                                <select name="gender" id="editGender" class="form-select">
+                        <option value="">Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mobile number</label>
+                            <input name="mobile" id="editMobile" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">City / Address</label>
+                            <textarea name="address" id="editAddress" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div id="editPatientFormStatus" class="status-message" style="display: none;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="border-top: 2px solid var(--border); padding: 1.5rem 2rem;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="savePatientBtn" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const patientList = document.getElementById('patientList');
+        const patientDetails = document.getElementById('patientDetails');
+        const patientTimeline = document.getElementById('patientTimeline');
+        const patientForm = document.getElementById('patientForm');
+        const visitForm = document.getElementById('visitForm');
+        const presContainer = document.getElementById('prescriptions');
+        const addPrescriptionBtn = document.getElementById('addPrescriptionBtn');
+        const patientFormStatus = document.getElementById('patientFormStatus');
+        const visitFormStatus = document.getElementById('visitFormStatus');
+        const patientIdInput = document.getElementById('patientIdInput');
+        const patientIdBadge = document.getElementById('patientIdBadge');
+        const editingVisitId = document.getElementById('editingVisitId');
+        const saveVisitBtn = document.getElementById('saveVisitBtn');
+        const editPatientModal = new bootstrap.Modal(document.getElementById('editPatientModal'));
+        const editPatientForm = document.getElementById('editPatientForm');
+        const savePatientBtn = document.getElementById('savePatientBtn');
+        const editPatientFormStatus = document.getElementById('editPatientFormStatus');
+        const firstNameInput = document.getElementById('firstNameInput');
+        const firstNameAutocomplete = document.getElementById('firstNameAutocomplete');
+
+        let selectedPatientId = null;
+        let visitDatePicker = null;
+        let currentPatient = null;
+        let allPatients = [];
+
+        // Initialize Flatpickr for date picker with Indian format
+        visitDatePicker = flatpickr("#visitDate", {
+            enableTime: true,
+            dateFormat: "d/m/Y h:i K",
+            time_24hr: false,
+            defaultDate: new Date(),
+            allowInput: true,
+            locale: {
+                firstDayOfWeek: 1
+            }
+        });
+
+        const debounce = (fn, delay = 300) => {
+            let timeout;
+            return (...args) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => fn(...args), delay);
+            };
+        };
+
+        const showStatus = (element, message, type) => {
+            element.textContent = message;
+            element.className = `status-message ${type}`;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        };
+
+        const formatIndianDate = (dateString) => {
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            let hours = date.getHours();
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            const strTime = `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
+            return `${day}/${month}/${year} ${strTime}`;
+        };
+
+        const parseIndianDate = (dateString) => {
+            // Parse DD/MM/YYYY hh:mm AM/PM format
+            const parts = dateString.split(' ');
+            const datePart = parts[0];
+            const timePart = parts.slice(1).join(' ');
+            const [day, month, year] = datePart.split('/');
+            let hour = 0, minute = 0;
+            if (timePart) {
+                const [time, ampm] = timePart.split(' ');
+                const [h, m] = time.split(':');
+                hour = parseInt(h);
+                minute = parseInt(m || '0');
+                if (ampm === 'PM' && hour !== 12) hour += 12;
+                if (ampm === 'AM' && hour === 12) hour = 0;
+            }
+            return new Date(year, month - 1, day, hour, minute);
+        };
+
+        const renderPatientList = (patients) => {
+            if (!patients.length) {
+                patientList.innerHTML = '<p class="muted text-center py-4" style="font-size: 1.1rem;">No matches found.</p>';
+                return;
+            }
+            patientList.innerHTML = patients.map(p => `
+                <div class="patient-item ${p.id === selectedPatientId ? 'active' : ''}" data-id="${p.id}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div style="flex: 1;">
+                            <strong>${p.displayName}</strong>
+                            <div class="muted mt-1">
+                                <i class="bi bi-gender-ambiguous"></i> ${p.gender ?? '—'} 
+                                <span class="mx-2">•</span>
+                                <i class="bi bi-calendar"></i> ${p.age ?? '?'} yrs 
+                                <span class="mx-2">•</span>
+                                <i class="bi bi-telephone"></i> ${p.mobile ?? 'No mobile'}
+                            </div>
+                            ${p.address ? `<div class="muted mt-1"><i class="bi bi-geo-alt"></i> ${p.address}</div>` : ''}
+                            ${p.lastVisitDate ? `<div class="muted mt-1"><i class="bi bi-clock"></i> Last visit: ${formatIndianDate(p.lastVisitDate)}</div>` : ''}
+                        </div>
+                        <i class="bi bi-chevron-right text-muted ms-2"></i>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        const loadVisitIntoForm = (visit) => {
+            editingVisitId.value = visit.id;
+            visitForm.symptoms.value = visit.symptoms || '';
+            visitForm.diagnosis.value = visit.diagnosis || '';
+            
+            // Set date
+            if (visitDatePicker) {
+                visitDatePicker.setDate(new Date(visit.visitDate));
+            }
+            
+            // Load prescriptions
+            presContainer.innerHTML = '';
+            if (visit.prescriptions && visit.prescriptions.length > 0) {
+                visit.prescriptions.forEach(pres => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'prescription-group';
+                    wrapper.innerHTML = `
+                        <button type="button" class="btn btn-danger btn-sm btn-delete" onclick="this.closest('.prescription-group').remove()">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        <div class="mb-2">
+                            <label class="form-label">Medicine Name *</label>
+                            <input class="form-control" placeholder="Medicine name" value="${pres.medicineName || ''}" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label">Dosage</label>
+                                <input class="form-control" placeholder="e.g. 500mg" value="${pres.dosage || ''}">
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label">Duration (days)</label>
+                                <input type="number" class="form-control" placeholder="Duration in days" value="${pres.durationDays || ''}" min="0">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label">Notes / Instructions</label>
+                            <textarea class="form-control" rows="2" placeholder="Additional notes or instructions">${pres.notes || ''}</textarea>
+                        </div>
+                    `;
+                    presContainer.appendChild(wrapper);
+                });
+            } else {
+                buildPrescriptionFields();
+            }
+            
+            saveVisitBtn.innerHTML = '<i class="bi bi-pencil-square"></i> Update Visit';
+            saveVisitBtn.classList.remove('btn-primary');
+            saveVisitBtn.classList.add('btn-warning');
+        };
+
+        const resetVisitForm = () => {
+            editingVisitId.value = '';
+            visitForm.reset();
+            if (visitDatePicker) {
+                visitDatePicker.setDate(new Date());
+            }
+            presContainer.innerHTML = '';
+            buildPrescriptionFields();
+            saveVisitBtn.innerHTML = '<i class="bi bi-save"></i> Save Visit';
+            saveVisitBtn.classList.remove('btn-warning');
+            saveVisitBtn.classList.add('btn-primary');
+        };
+
+        const renderPatientDetails = (patient) => {
+            if (!patient) {
+                patientDetails.innerHTML = '<p class="muted" style="font-size: 1.1rem;">Select a patient to view details.</p>';
+                patientTimeline.innerHTML = '<p class="muted" style="font-size: 1.1rem;">Select a patient to view visit history.</p>';
+                const patientDetailsActions = document.getElementById('patientDetailsActions');
+                if (patientDetailsActions) {
+                    patientDetailsActions.style.display = 'none';
+                }
+                return;
+            }
+            currentPatient = patient;
+            selectedPatientId = patient.id;
+            patientIdInput.value = patient.id;
+            patientIdBadge.textContent = `ID: ${patient.id}`;
+            patientIdBadge.style.display = 'inline-block';
+
+            // Show edit button in header
+            const patientDetailsActions = document.getElementById('patientDetailsActions');
+            if (patientDetailsActions) {
+                patientDetailsActions.style.display = 'flex';
+            }
+            
+            // Render patient details
+            patientDetails.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="mb-3">${patient.firstName ?? ''} ${patient.middleName ?? ''} ${patient.lastName ?? ''}</h5>
+                        <div class="muted mb-2" style="font-size: 1.05rem;">
+                            <i class="bi bi-gender-ambiguous"></i> <strong>Gender:</strong> ${patient.gender ?? '—'}
+                        </div>
+                        <div class="muted mb-2" style="font-size: 1.05rem;">
+                            <i class="bi bi-calendar"></i> <strong>Age:</strong> ${patient.age ?? '?'} years
+                        </div>
+                        <div class="muted mb-2" style="font-size: 1.05rem;">
+                            <i class="bi bi-telephone"></i> <strong>Mobile:</strong> ${patient.mobile ?? 'No mobile'}
+                        </div>
+                        <div class="muted mb-2" style="font-size: 1.05rem;">
+                            <i class="bi bi-geo-alt"></i> <strong>Address:</strong> ${patient.address ?? 'No address'}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="muted mb-3" style="font-size: 1.05rem;">
+                            <i class="bi bi-calendar-check"></i> Created: ${patient.createdAt ? formatIndianDate(patient.createdAt) : '—'}
+                        </div>
+                        <div>
+                            <strong class="mb-2 d-block" style="font-size: 1.05rem;"><i class="bi bi-lightbulb"></i> Suggested Medications</strong>
+                            <div id="suggestionsBlock" class="suggestions"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Render timeline with edit buttons
+            const visitHtml = patient.visits?.length
+                ? patient.visits.map(v => `
+                    <div class="timeline-item">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <strong style="font-size: 1.05rem;"><i class="bi bi-calendar-event"></i> ${formatIndianDate(v.visitDate)}</strong>
+                                    <button type="button" class="btn btn-warning btn-sm edit-visit-btn" onclick="editVisit(${v.id})">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </button>
+                                </div>
+                                ${v.symptoms ? `<div class="muted mb-2" style="font-size: 1.05rem;"><strong>Symptoms:</strong> ${v.symptoms}</div>` : ''}
+                                ${v.diagnosis ? `<div class="muted mb-2" style="font-size: 1.05rem;"><strong>Diagnosis:</strong> ${v.diagnosis}</div>` : ''}
+                                ${v.prescriptions?.length ? `
+                                    <div class="mt-2">
+                                        <strong class="d-block mb-2" style="font-size: 1.05rem;">Prescriptions:</strong>
+                        <div class="suggestions">
+                                            ${v.prescriptions.map(pr => `
+                                                <span class="chip">
+                                                    <i class="bi bi-capsule"></i> ${pr.medicineName} 
+                                                    ${pr.dosage ? `(${pr.dosage})` : ''}
+                                                    ${pr.durationDays ? ` - ${pr.durationDays} days` : ''}
+                                                </span>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('')
+                : '<p class="muted text-center py-4" style="font-size: 1.1rem;">No visits recorded yet.</p>';
+
+            patientTimeline.innerHTML = `<div class="timeline">${visitHtml}</div>`;
+
+            // Fetch suggestions
+            fetch(`/api/patients/${patient.id}/suggestions`)
+                .then(res => res.json())
+                .then(suggestions => {
+                    const html = suggestions.length
+                        ? suggestions.map(text => `<span class="chip">${text}</span>`).join('')
+                        : '<span class="muted" style="font-size: 1.05rem;">Not enough history yet.</span>';
+                    const suggestionsBlock = document.getElementById('suggestionsBlock');
+                    if (suggestionsBlock) {
+                        suggestionsBlock.innerHTML = html;
+                    }
+                }).catch(() => {});
+        };
+
+        // Make editVisit available globally
+        window.editVisit = function(visitId) {
+            if (!currentPatient || !currentPatient.visits) return;
+            const visit = currentPatient.visits.find(v => v.id === visitId);
+            if (visit) {
+                loadVisitIntoForm(visit);
+                // Scroll to form
+                document.getElementById('visitForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        };
+
+        // Open edit patient modal
+        window.openEditPatientModal = function() {
+            if (!currentPatient) return;
+            
+            // Populate form with current patient data
+            document.getElementById('editFirstName').value = currentPatient.firstName || '';
+            document.getElementById('editMiddleName').value = currentPatient.middleName || '';
+            document.getElementById('editLastName').value = currentPatient.lastName || '';
+            document.getElementById('editAge').value = currentPatient.age || '';
+            document.getElementById('editGender').value = currentPatient.gender || '';
+            document.getElementById('editMobile').value = currentPatient.mobile || '';
+            document.getElementById('editAddress').value = currentPatient.address || '';
+            
+            editPatientFormStatus.style.display = 'none';
+            editPatientModal.show();
+        };
+
+        // Save patient changes
+        savePatientBtn.addEventListener('click', () => {
+            if (!currentPatient) return;
+            
+            editPatientFormStatus.style.display = 'none';
+            
+            const formData = new FormData(editPatientForm);
+            const payload = Object.fromEntries(formData.entries());
+            if (payload.age) payload.age = Number(payload.age);
+            if (!payload.age) payload.age = null;
+            
+            fetch(`/api/patients/${currentPatient.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(res => {
+                if (!res.ok) throw new Error('Failed to update patient');
+                return res.json();
+            }).then(data => {
+                editPatientModal.hide();
+                showStatus(editPatientFormStatus, '✓ Patient updated successfully!', 'success');
+                fetchDetailAndRender(currentPatient.id);
+                searchPatients(searchInput.value);
+            }).catch(err => {
+                showStatus(editPatientFormStatus, `✗ ${err.message}`, 'error');
+            });
+        });
+
+        const fetchDetailAndRender = (id) => {
+            fetch(`/api/patients/${id}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Unable to load patient');
+                    return res.json();
+                })
+                .then(renderPatientDetails)
+                .catch((err) => {
+                    patientDetails.innerHTML = `<p class="error">${err.message}</p>`;
+                });
+        };
+
+        const searchPatients = debounce((term) => {
+            fetch(`/api/patients/search?query=${encodeURIComponent(term)}`)
+                .then(res => res.json())
+                .then(data => {
+                    allPatients = data; // Store all patients for autocomplete
+                    renderPatientList(data);
+                })
+                .catch(() => patientList.innerHTML = '<p class="error" style="font-size: 1.1rem;">Search failed.</p>');
+        }, 400);
+        
+        const searchPatientsForAutocomplete = debounce((term) => {
+            if (!term || term.length < 2) {
+                firstNameAutocomplete.classList.remove('show');
+                return;
+            }
+            
+            fetch(`/api/patients/search?query=${encodeURIComponent(term)}`)
+                .then(res => res.json())
+                .then(patients => {
+                    if (patients.length === 0) {
+                        firstNameAutocomplete.innerHTML = '';
+                        firstNameAutocomplete.classList.remove('show');
+                        return;
+                    }
+                    
+                    // Filter patients whose first name matches
+                    const matchingPatients = patients.filter(p => {
+                        const fullName = p.displayName.toLowerCase();
+                        const firstName = term.toLowerCase();
+                        return fullName.includes(firstName);
+                    });
+                    
+                    if (matchingPatients.length === 0) {
+                        firstNameAutocomplete.innerHTML = '';
+                        firstNameAutocomplete.classList.remove('show');
+                        return;
+                    }
+                    
+                    let html = '<div class="autocomplete-warning"><i class="bi bi-exclamation-triangle"></i> Similar patients found:</div>';
+                    html += matchingPatients.slice(0, 5).map(p => `
+                        <div class="autocomplete-item" onclick="selectExistingPatient(${p.id})">
+                            <strong>${p.displayName}</strong>
+                            <div class="muted">${p.gender ?? '—'} • ${p.age ?? '?'} yrs • ${p.mobile ?? 'No mobile'}</div>
+                            ${p.address ? `<div class="muted" style="margin-top: 0.25rem;"><i class="bi bi-geo-alt"></i> ${p.address}</div>` : ''}
+                        </div>
+                    `).join('');
+                    
+                    firstNameAutocomplete.innerHTML = html;
+                    firstNameAutocomplete.classList.add('show');
+                })
+                .catch(() => {
+                    firstNameAutocomplete.classList.remove('show');
+                });
+        }, 300);
+        
+        // Make selectExistingPatient available globally
+        window.selectExistingPatient = function(patientId) {
+            firstNameAutocomplete.classList.remove('show');
+            fetchDetailAndRender(patientId);
+            // Clear the form
+            patientForm.reset();
+            // Scroll to patient details
+            setTimeout(() => {
+                document.getElementById('patientDetails').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        };
+
+        searchInput.addEventListener('input', (event) => {
+            searchPatients(event.target.value);
+        });
+        
+        // Autocomplete for first name input
+        firstNameInput.addEventListener('input', (event) => {
+            searchPatientsForAutocomplete(event.target.value);
+        });
+        
+        // Hide autocomplete when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.autocomplete-wrapper')) {
+                firstNameAutocomplete.classList.remove('show');
+            }
+        });
+        
+        // Hide autocomplete on form submit
+        patientForm.addEventListener('submit', () => {
+            firstNameAutocomplete.classList.remove('show');
+        });
+        
+        // Prevent negative values in number inputs
+        document.addEventListener('input', (event) => {
+            if (event.target.type === 'number' && event.target.hasAttribute('min')) {
+                const min = parseFloat(event.target.getAttribute('min'));
+                const value = parseFloat(event.target.value);
+                if (!isNaN(value) && value < min) {
+                    event.target.value = min;
+                }
+            }
+        });
+        
+        // Prevent negative values on keydown (for arrow keys and typing)
+        document.addEventListener('keydown', (event) => {
+            if (event.target.type === 'number' && event.target.hasAttribute('min')) {
+                const min = parseFloat(event.target.getAttribute('min'));
+                if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                    const currentValue = parseFloat(event.target.value) || 0;
+                    if (event.key === 'ArrowDown' && currentValue <= min) {
+                        event.preventDefault();
+                    }
+                }
+            }
+        });
+
+        patientList.addEventListener('click', (event) => {
+            const item = event.target.closest('.patient-item');
+            if (!item) return;
+            fetchDetailAndRender(item.dataset.id);
+            [...patientList.children].forEach(child => child.classList.remove('active'));
+            item.classList.add('active');
+            resetVisitForm();
+            
+            // Auto-scroll to visit history
+            setTimeout(() => {
+                const timelineCard = document.querySelector('#patientTimeline').closest('.card');
+                if (timelineCard) {
+                    timelineCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 300);
+        });
+
+        patientForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            patientFormStatus.style.display = 'none';
+
+            const formData = new FormData(patientForm);
+            const payload = Object.fromEntries(formData.entries());
+            if (payload.age) payload.age = Number(payload.age);
+
+            fetch('/api/patients', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(res => {
+                if (!res.ok) throw new Error('Failed to create patient');
+                return res.json();
+            }).then(data => {
+                patientForm.reset();
+                showStatus(patientFormStatus, '✓ Patient created successfully!', 'success');
+                searchPatients(searchInput.value);
+                renderPatientDetails(data);
+                resetVisitForm();
+            }).catch(err => {
+                showStatus(patientFormStatus, `✗ ${err.message}`, 'error');
+            });
+        });
+
+        const buildPrescriptionFields = () => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'prescription-group';
+            wrapper.innerHTML = `
+                <button type="button" class="btn btn-danger btn-sm btn-delete" onclick="this.closest('.prescription-group').remove()">
+                    <i class="bi bi-trash"></i>
+                </button>
+                <div class="mb-2">
+                    <label class="form-label">Medicine Name *</label>
+                    <input class="form-control" placeholder="Medicine name" required>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">Dosage</label>
+                        <input class="form-control" placeholder="e.g. 500mg">
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">Duration (days)</label>
+                        <input type="number" class="form-control" placeholder="Duration in days" min="0">
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">Notes / Instructions</label>
+                    <textarea class="form-control" rows="2" placeholder="Additional notes or instructions"></textarea>
+                </div>
+            `;
+            presContainer.appendChild(wrapper);
+        };
+
+        addPrescriptionBtn.addEventListener('click', buildPrescriptionFields);
+        buildPrescriptionFields();
+
+        visitForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            visitFormStatus.style.display = 'none';
+
+            const formData = new FormData(visitForm);
+            
+            // Get date from Flatpickr instance
+            let visitDateISO;
+            if (visitDatePicker && visitDatePicker.selectedDates.length > 0) {
+                visitDateISO = visitDatePicker.selectedDates[0].toISOString();
+            } else {
+                const visitDateInput = document.getElementById('visitDate');
+                if (visitDateInput.value) {
+                    // Fallback: parse Indian date format
+                    try {
+                        const parsedDate = parseIndianDate(visitDateInput.value);
+                        visitDateISO = parsedDate.toISOString();
+                    } catch (e) {
+                        showStatus(visitFormStatus, '✗ Please select a valid visit date and time', 'error');
+                        return;
+                    }
+                } else {
+                    showStatus(visitFormStatus, '✗ Please select a visit date and time', 'error');
+                    return;
+                }
+            }
+
+            const payload = {
+                patientId: Number(formData.get('patientId')),
+                visitDate: visitDateISO,
+                symptoms: formData.get('symptoms'),
+                diagnosis: formData.get('diagnosis'),
+                prescriptions: [...presContainer.children].map(group => {
+                    const inputs = group.querySelectorAll('input, textarea');
+                    const medicineInput = inputs[0];
+                    const dosageInput = inputs[1];
+                    const durationInput = inputs[2];
+                    const notesInput = inputs[3];
+                    return {
+                        medicineName: medicineInput.value,
+                        dosage: dosageInput.value,
+                        durationDays: durationInput.value ? Number(durationInput.value) : null,
+                        notes: notesInput.value
+                    };
+                }).filter(p => p.medicineName)
+            };
+
+            // For now, we'll create a new visit even when editing (backend doesn't have update endpoint)
+            // In a real scenario, you'd check if editingVisitId has a value and use PUT/PATCH
+            fetch('/api/visits', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(res => {
+                if (!res.ok) throw new Error('Failed to save visit');
+                return res.json();
+            }).then(() => {
+                const message = editingVisitId.value ? '✓ Visit updated successfully! (Note: This creates a new visit. Update endpoint needed for true editing)' : '✓ Visit recorded successfully!';
+                showStatus(visitFormStatus, message, 'success');
+                if (payload.patientId === selectedPatientId) {
+                    fetchDetailAndRender(selectedPatientId);
+                }
+                resetVisitForm();
+            }).catch(err => {
+                showStatus(visitFormStatus, `✗ ${err.message}`, 'error');
+            });
+        });
+
+        // Update date and time in navbar
+        function updateDateTime() {
+            const now = new Date();
+            const dateOptions = { day: '2-digit', month: 'short', year: 'numeric' };
+            const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+            
+            document.getElementById('dateDisplay').textContent = now.toLocaleDateString('en-IN', dateOptions);
+            document.getElementById('timeDisplay').textContent = now.toLocaleTimeString('en-IN', timeOptions);
+        }
+        
+        // Update time every minute
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
+
+        // Initial load
+        searchPatients('');
+    </script>
+</body>
+</html>
